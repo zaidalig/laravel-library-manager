@@ -16,7 +16,7 @@ class DashboardController extends Controller
             'members' => Member::count(),
             'active_loans' => BookLoan::where('status', 'borrowed')->count(),
             'overdue_loans' => BookLoan::where('status', 'borrowed')->whereDate('due_at', '<', today())->count(),
-            'fines_collected' => BookLoan::where('status', 'returned')->sum('fine_amount'),
+            'fines_collected' => BookLoan::where('status', 'returned')->where('fine_paid', true)->sum('fine_amount'),
         ];
 
         $overdueLoans = BookLoan::with(['book', 'member'])

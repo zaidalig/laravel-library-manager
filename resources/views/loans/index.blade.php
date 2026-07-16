@@ -9,12 +9,15 @@
 </form></div></div>
 <div class="card card-table border-0"><div class="table-responsive"><table class="table mb-0"><thead class="table-light"><tr><th>Book</th><th>Member</th><th>Loaned</th><th>Due</th><th>Returned</th><th>Fine</th><th>Status</th><th class="text-end">Actions</th></tr></thead><tbody>
 @forelse($loans as $loan)
-<tr><td class="fw-bold">{{ $loan->book->title }}</td><td>{{ $loan->member->name }}</td><td>{{ $loan->loaned_at->format('M d, Y') }}</td><td>{{ $loan->due_at->format('M d, Y') }}</td><td>{{ $loan->returned_at?->format('M d, Y') ?? '-' }}</td><td>{{ number_format($loan->fine_amount,2) }}</td>
+<tr><td class="fw-bold">{{ $loan->book->title }}</td><td>{{ $loan->member->name }}</td><td>{{ $loan->loaned_at->format('M d, Y') }}</td><td>{{ $loan->due_at->format('M d, Y') }}</td><td>{{ $loan->returned_at?->format('M d, Y') ?? '-' }}</td><td>@if($loan->fine_amount>0)${{ number_format($loan->fine_amount,2) }}@if($loan->fine_paid) <span class="badge bg-success-subtle text-success">Paid</span>@else <span class="badge bg-warning-subtle text-warning">Unpaid</span>@endif @else - @endif</td>
 <td><span class="badge {{ $loan->status==='returned'?'bg-success-subtle text-success':($loan->isOverdue()?'bg-danger-subtle text-danger':'bg-warning-subtle text-warning') }}">{{ $loan->isOverdue() ? 'Overdue' : ucfirst($loan->status) }}</span></td>
 <td class="text-end">
 @if($loan->status==='borrowed')
 <form method="POST" action="{{ route('loans.return',$loan) }}" class="d-inline">@csrf @method('PATCH')<button class="btn btn-sm btn-outline-success" title="Return"><i class="fa-solid fa-rotate-left"></i> Return</button></form>
 @else
+@if($loan->fine_amount>0 && !$loan->fine_paid)
+<form method="POST" action="{{ route('loans.settle-fine',$loan) }}" class="d-inline">@csrf @method('PATCH')<button class="btn btn-sm btn-outline-success" title="Mark Fine Paid"><i class="fa-solid fa-dollar-sign"></i> Pay Fine</button></form>
+@endif
 <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-url="{{ route('loans.destroy',$loan) }}" data-name="loan of {{ $loan->book->title }}"><i class="fa-solid fa-trash"></i></button>
 @endif
 </td></tr>

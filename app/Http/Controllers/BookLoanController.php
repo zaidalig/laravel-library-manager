@@ -89,6 +89,28 @@ class BookLoanController extends Controller
         return back()->with('success', $message);
     }
 
+    public function settleFine(BookLoan $loan)
+    {
+        if ($loan->status !== 'returned') {
+            return back()->with('error', 'Only returned loans can have fines settled.');
+        }
+
+        if ($loan->fine_amount <= 0) {
+            return back()->with('error', 'This loan has no fine to settle.');
+        }
+
+        if ($loan->fine_paid) {
+            return back()->with('error', 'Fine has already been paid.');
+        }
+
+        $loan->update([
+            'fine_paid' => true,
+            'fine_paid_at' => now(),
+        ]);
+
+        return back()->with('success', 'Fine of $'.number_format($loan->fine_amount, 2).' marked as paid.');
+    }
+
     public function destroy(BookLoan $loan)
     {
         if ($loan->status !== 'returned') {
