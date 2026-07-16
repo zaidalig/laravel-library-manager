@@ -1,0 +1,14 @@
+@extends('layouts.app')
+@section('title','Dashboard')@section('page_title','Library Dashboard')
+@section('content')
+<div class="row g-4 mb-4">
+@foreach([['Books',$stats['books'],'book','primary'],['Members',$stats['members'],'address-card','info'],['Active Loans',$stats['active_loans'],'hand-holding-hand','success'],['Overdue Loans',$stats['overdue_loans'],'triangle-exclamation','warning'],['Fines Collected',number_format($stats['fines_collected'],2),'money-bill-wave','danger']] as $s)
+<div class="col-md-4 col-xl"><div class="card stat-card card-{{ $s[3] }} p-3"><div class="d-flex justify-content-between"><div><div class="text-muted small">{{ $s[0] }}</div><h3 class="fw-bold mb-0">{{ $s[1] }}</h3></div><div class="card-icon bg-{{ $s[3] }}-subtle text-{{ $s[3] }}"><i class="fa-solid fa-{{ $s[2] }}"></i></div></div></div></div>
+@endforeach
+</div>
+<div class="row g-4">
+<div class="col-lg-6"><div class="card card-table border-0"><div class="card-header bg-white fw-bold">Overdue Loans</div><div class="table-responsive"><table class="table mb-0"><thead class="table-light"><tr><th>Book</th><th>Member</th><th>Due</th><th>Days Late</th></tr></thead><tbody>@forelse($overdueLoans as $l)<tr><td>{{ $l->book->title }}</td><td>{{ $l->member->name }}</td><td>{{ $l->due_at->format('M d, Y') }}</td><td><span class="badge bg-danger-subtle text-danger">{{ $l->due_at->diffInDays(today()) }}</span></td></tr>@empty<tr><td colspan="4" class="text-center py-3 text-muted">No overdue loans.</td></tr>@endforelse</tbody></table></div></div></div>
+<div class="col-lg-6"><div class="card card-table border-0"><div class="card-header bg-white fw-bold">Recent Loans</div><div class="table-responsive"><table class="table mb-0"><thead class="table-light"><tr><th>Book</th><th>Member</th><th>Loaned</th><th>Status</th></tr></thead><tbody>@forelse($recentLoans as $l)<tr><td>{{ $l->book->title }}</td><td>{{ $l->member->name }}</td><td>{{ $l->loaned_at->format('M d, Y') }}</td><td><span class="badge {{ $l->status==='returned'?'bg-success-subtle text-success':($l->isOverdue()?'bg-danger-subtle text-danger':'bg-warning-subtle text-warning') }}">{{ $l->isOverdue() ? 'Overdue' : ucfirst($l->status) }}</span></td></tr>@empty<tr><td colspan="4" class="text-center py-3 text-muted">No loans yet.</td></tr>@endforelse</tbody></table></div></div></div>
+</div>
+<div class="card card-table border-0 mt-4"><div class="card-header bg-white fw-bold">Latest Activity</div><div class="table-responsive"><table class="table mb-0"><thead class="table-light"><tr><th>Action</th><th>Description</th><th>User</th><th>When</th></tr></thead><tbody>@foreach($recentLogs as $log)<tr><td><span class="badge bg-light text-dark border">{{ $log->action }}</span></td><td>{{ $log->description }}</td><td>{{ $log->user?->name ?? 'System' }}</td><td class="text-muted small">{{ $log->created_at->diffForHumans() }}</td></tr>@endforeach</tbody></table></div></div>
+@endsection
