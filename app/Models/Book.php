@@ -13,8 +13,13 @@ class Book extends Model
 
     protected $fillable = [
         'isbn', 'title', 'author', 'genre_id', 'published_year',
-        'total_copies', 'available_copies', 'shelf_location', 'status',
+        'total_copies', 'available_copies', 'shelf_location', 'cover_path', 'status',
     ];
+
+    public function coverUrl(): ?string
+    {
+        return $this->cover_path ? asset('storage/'.$this->cover_path) : null;
+    }
 
     public function genre(): BelongsTo
     {

@@ -275,6 +275,29 @@ body {
     border-left: 4px solid #f59e0b;
 }
 
+.book-cover-thumb {
+    width: 40px;
+    height: 56px;
+    object-fit: cover;
+}
+
+.book-cover-placeholder {
+    width: 40px;
+    height: 56px;
+    background: #e2e8f0;
+    font-size: 0.85rem;
+}
+
+.book-cover-lg {
+    max-height: 320px;
+    object-fit: cover;
+}
+
+.book-cover-lg-placeholder {
+    height: 220px;
+    background: #e2e8f0;
+}
+
 /* Responsive sidebar */
 @media (max-width: 991.98px) {
     .sidebar {

@@ -8,4 +8,5 @@
 <div class="col-md-2"><label class="form-label">Available Copies</label><input type="number" name="available_copies" class="form-control" min="0" value="{{ old('available_copies', $book->available_copies ?? 1) }}" required></div>
 <div class="col-md-2"><label class="form-label">Shelf</label><input name="shelf_location" class="form-control" value="{{ old('shelf_location', $book->shelf_location ?? '') }}"></div>
 <div class="col-md-4"><label class="form-label">Status</label><select name="status" class="form-select">@foreach(['active','inactive'] as $s)<option value="{{ $s }}" @selected(old('status', $book->status ?? 'active')===$s)>{{ ucfirst($s) }}</option>@endforeach</select></div>
+<div class="col-md-6"><label class="form-label">Cover Image</label><input type="file" name="cover" class="form-control" accept="image/*">@if(!empty($book?->cover_path))<div class="mt-2"><img src="{{ $book->coverUrl() }}" alt="Current cover" class="book-cover-thumb rounded border"></div>@endif</div>
 </div>

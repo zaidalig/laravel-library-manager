@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\Genre;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class BookController extends Controller
 {
@@ -49,6 +50,11 @@ class BookController extends Controller
     public function store(Request $request)
     {
         $data = $this->validated($request);
+
+        if ($request->hasFile('cover')) {
+            $data['cover_path'] = $request->file('cover')->store('covers', 'public');
+        }
+
         $book = Book::create($data);
 
         return redirect()->route('books.index')
@@ -75,6 +81,14 @@ class BookController extends Controller
     public function update(Request $request, Book $book)
     {
         $data = $this->validated($request, $book->id);
+
+        if ($request->hasFile('cover')) {
+            if ($book->cover_path) {
+                Storage::disk('public')->delete($book->cover_path);
+            }
+            $data['cover_path'] = $request->file('cover')->store('covers', 'public');
+        }
+
         $book->update($data);
 
         return redirect()->route('books.show', $book)
@@ -84,6 +98,11 @@ class BookController extends Controller
     public function destroy(Book $book)
     {
         $title = $book->title;
+
+        if ($book->cover_path) {
+            Storage::disk('public')->delete($book->cover_path);
+        }
+
         $book->delete();
 
         return redirect()->route('books.index')
@@ -92,7 +111,7 @@ class BookController extends Controller
 
     private function validated(Request $request, ?int $bookId = null): array
     {
-        return $request->validate([
+        $data = $request->validate([
             'isbn' => 'required|string|max:32|unique:books,isbn,'.($bookId ?? 'NULL'),
             'title' => 'required|string|max:255',
             'author' => 'required|string|max:255',
@@ -101,7 +120,12 @@ class BookController extends Controller
             'total_copies' => 'required|integer|min:1',
             'available_copies' => 'required|integer|min:0|lte:total_copies',
             'shelf_location' => 'nullable|string|max:64',
+            'cover' => 'nullable|image|max:2048',
             'status' => 'required|in:active,inactive',
         ]);
+
+        unset($data['cover']);
+
+        return $data;
     }
 }
