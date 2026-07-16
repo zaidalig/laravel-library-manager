@@ -19,6 +19,7 @@
         <li class="nav-item"><a href="{{ route('genres.index') }}" class="nav-link {{ request()->routeIs('genres.*')?'active':'' }}"><i class="fa-solid fa-tags"></i><span>Genres</span></a></li>
         <li class="nav-item"><a href="{{ route('members.index') }}" class="nav-link {{ request()->routeIs('members.*')?'active':'' }}"><i class="fa-solid fa-address-card"></i><span>Members</span></a></li>
         <li class="nav-item"><a href="{{ route('loans.index') }}" class="nav-link {{ request()->routeIs('loans.*')?'active':'' }}"><i class="fa-solid fa-hand-holding-hand"></i><span>Loans</span></a></li>
+        <li class="nav-item"><a href="{{ route('reports.overdue') }}" class="nav-link {{ request()->routeIs('reports.*')?'active':'' }}"><i class="fa-solid fa-file-csv"></i><span>Reports</span></a></li>
         @endcan
         @can('manage-users')
         <li class="nav-item"><a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users.*')?'active':'' }}"><i class="fa-solid fa-user-gear"></i><span>Users</span></a></li>
