@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\Genre;
 use Illuminate\Http\Request;
+use App\Services\MediaStorage;
 use Illuminate\Support\Facades\Storage;
 
 class BookController extends Controller
@@ -52,7 +53,7 @@ class BookController extends Controller
         $data = $this->validated($request);
 
         if ($request->hasFile('cover')) {
-            $data['cover_path'] = $request->file('cover')->store('covers', 'public');
+            $data['cover_path'] = MediaStorage::store($request->file('cover'), 'covers');
         }
 
         $book = Book::create($data);
@@ -84,9 +85,9 @@ class BookController extends Controller
 
         if ($request->hasFile('cover')) {
             if ($book->cover_path) {
-                Storage::disk('public')->delete($book->cover_path);
+                MediaStorage::delete($book->cover_path);
             }
-            $data['cover_path'] = $request->file('cover')->store('covers', 'public');
+            $data['cover_path'] = MediaStorage::store($request->file('cover'), 'covers');
         }
 
         $book->update($data);
@@ -100,7 +101,7 @@ class BookController extends Controller
         $title = $book->title;
 
         if ($book->cover_path) {
-            Storage::disk('public')->delete($book->cover_path);
+            MediaStorage::delete($book->cover_path);
         }
 
         $book->delete();

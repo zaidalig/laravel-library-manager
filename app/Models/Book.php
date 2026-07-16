@@ -18,7 +18,7 @@ class Book extends Model
 
     public function coverUrl(): ?string
     {
-        return $this->cover_path ? asset('storage/'.$this->cover_path) : null;
+        return $this->cover_path ? media_url($this->cover_path) : null;
     }
 
     public function genre(): BelongsTo
