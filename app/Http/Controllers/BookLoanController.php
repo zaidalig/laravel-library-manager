@@ -27,7 +27,8 @@ class BookLoanController extends Controller
             $query->where('book_id', $request->input('book_id'));
         }
 
-        $loans = $query->latest()->paginate(10)->withQueryString();
+        [$perPage, $sort, $direction] = $this->listQueryParams($request, ['loaned_at', 'due_at', 'returned_at', 'fine_amount', 'status', 'created_at'], 'created_at');
+        $loans = $query->orderBy($sort, $direction)->paginate($perPage)->withQueryString();
         $members = Member::where('status', 'active')->orderBy('name')->get();
         $books = Book::where('status', 'active')->orderBy('title')->get();
 
@@ -87,6 +88,28 @@ class BookLoanController extends Controller
         }
 
         return back()->with('success', $message);
+    }
+
+    public function settleFine(BookLoan $loan)
+    {
+        if ($loan->status !== 'returned') {
+            return back()->with('error', 'Only returned loans can have fines settled.');
+        }
+
+        if ($loan->fine_amount <= 0) {
+            return back()->with('error', 'This loan has no fine to settle.');
+        }
+
+        if ($loan->fine_paid) {
+            return back()->with('error', 'Fine has already been paid.');
+        }
+
+        $loan->update([
+            'fine_paid' => true,
+            'fine_paid_at' => now(),
+        ]);
+
+        return back()->with('success', 'Fine of $'.number_format($loan->fine_amount, 2).' marked as paid.');
     }
 
     public function destroy(BookLoan $loan)

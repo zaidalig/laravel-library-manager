@@ -24,7 +24,9 @@
         @can('manage-users')
         <li class="nav-item"><a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users.*')?'active':'' }}"><i class="fa-solid fa-user-gear"></i><span>Users</span></a></li>
         @endcan
-        <li class="nav-item"><a href="{{ route('activity.index') }}" class="nav-link {{ request()->routeIs('activity.*')?'active':'' }}"><i class="fa-solid fa-clock-rotate-left"></i><span>Activity</span></a></li>
+        @can('manage-users')
+                <li class="nav-item"><a href="{{ route('activity.index') }}" class="nav-link {{ request()->routeIs('activity.*')?'active':'' }}"><i class="fa-solid fa-clock-rotate-left"></i><span>Activity</span></a></li>
+            @endcan
     </ul>
 </aside>
 <div class="main-wrapper">
@@ -40,7 +42,8 @@
         @if(session('error'))<div class="alert alert-danger alert-dismissible fade show">{{ session('error') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>@endif
         @yield('content')
     </main>
-</div>
+        <footer class="app-footer"><i class="fa-solid fa-book-open me-2"></i>Library Manager</footer>
+    </div>
 <div class="modal fade" id="deleteModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Confirm Delete</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body">Delete <strong id="deleteItemName"></strong>?</div><div class="modal-footer"><button class="btn btn-light" data-bs-dismiss="modal">Cancel</button><form id="deleteForm" method="POST">@csrf @method('DELETE')<button class="btn btn-danger">Delete</button></form></div></div></div></div>
 <script src="{{ asset_cdn('bootstrap_js', 'vendor/bootstrap/bootstrap.bundle.min.js') }}"></script>
 <script>

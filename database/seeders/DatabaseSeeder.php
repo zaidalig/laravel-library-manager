@@ -70,7 +70,7 @@ class DatabaseSeeder extends Seeder
             // Returned on time
             ['book_id' => 8, 'member_id' => 4, 'loaned_at' => today()->subDays(30), 'due_at' => today()->subDays(16), 'returned_at' => today()->subDays(18), 'fine_amount' => 0, 'status' => 'returned'],
             // Returned late with fine (3 days * 10)
-            ['book_id' => 2, 'member_id' => 5, 'loaned_at' => today()->subDays(25), 'due_at' => today()->subDays(11), 'returned_at' => today()->subDays(8), 'fine_amount' => 30.00, 'status' => 'returned'],
+            ['book_id' => 2, 'member_id' => 5, 'loaned_at' => today()->subDays(25), 'due_at' => today()->subDays(11), 'returned_at' => today()->subDays(8), 'fine_amount' => 30.00, 'fine_paid' => false, 'status' => 'returned'],
         ];
 
         foreach ($loans as $loan) {

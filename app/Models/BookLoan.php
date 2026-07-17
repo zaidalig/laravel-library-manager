@@ -12,7 +12,8 @@ class BookLoan extends Model
 
     protected $fillable = [
         'book_id', 'member_id', 'loaned_at', 'due_at',
-        'returned_at', 'fine_amount', 'status', 'user_id',
+        'returned_at', 'fine_amount', 'fine_paid', 'fine_paid_at',
+        'status', 'user_id',
     ];
 
     protected function casts(): array
@@ -22,6 +23,8 @@ class BookLoan extends Model
             'due_at' => 'date',
             'returned_at' => 'date',
             'fine_amount' => 'decimal:2',
+            'fine_paid' => 'boolean',
+            'fine_paid_at' => 'datetime',
         ];
     }
 
