@@ -27,7 +27,8 @@ class BookLoanController extends Controller
             $query->where('book_id', $request->input('book_id'));
         }
 
-        $loans = $query->latest()->paginate(10)->withQueryString();
+        [$perPage, $sort, $direction] = $this->listQueryParams($request, ['loaned_at', 'due_at', 'returned_at', 'fine_amount', 'status', 'created_at'], 'created_at');
+        $loans = $query->orderBy($sort, $direction)->paginate($perPage)->withQueryString();
         $members = Member::where('status', 'active')->orderBy('name')->get();
         $books = Book::where('status', 'active')->orderBy('title')->get();
 

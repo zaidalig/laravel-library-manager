@@ -11,6 +11,8 @@ use App\Http\Controllers\OverdueReportController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
+Route::view('/', 'public.home')->name('home');
+
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'create'])->name('login');
     Route::post('/login', [LoginController::class, 'store'])->name('login.store');
@@ -18,7 +20,7 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware(['auth', 'active.user'])->group(function () {
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::middleware('can:manage-library')->group(function () {
         Route::resource('genres', GenreController::class)->except(['show']);

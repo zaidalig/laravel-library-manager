@@ -19,7 +19,8 @@ class GenreController extends Controller
             $query->where('status', $request->input('status'));
         }
 
-        $genres = $query->latest()->paginate(10)->withQueryString();
+        [$perPage, $sort, $direction] = $this->listQueryParams($request, ['name', 'created_at'], 'created_at');
+        $genres = $query->orderBy($sort, $direction)->paginate($perPage)->withQueryString();
 
         return view('genres.index', compact('genres'));
     }

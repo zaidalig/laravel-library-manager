@@ -35,7 +35,8 @@ class BookController extends Controller
             $query->where('available_copies', '>', 0);
         }
 
-        $books = $query->latest()->paginate(10)->withQueryString();
+        [$perPage, $sort, $direction] = $this->listQueryParams($request, ['title', 'author', 'isbn', 'status', 'created_at'], 'created_at');
+        $books = $query->orderBy($sort, $direction)->paginate($perPage)->withQueryString();
         $genres = Genre::where('status', 'active')->orderBy('name')->get();
 
         return view('books.index', compact('books', 'genres'));

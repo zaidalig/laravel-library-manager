@@ -24,7 +24,8 @@ class MemberController extends Controller
             $query->where('status', $request->input('status'));
         }
 
-        $members = $query->latest()->paginate(10)->withQueryString();
+        [$perPage, $sort, $direction] = $this->listQueryParams($request, ['name', 'email', 'member_code', 'status', 'created_at'], 'created_at');
+        $members = $query->orderBy($sort, $direction)->paginate($perPage)->withQueryString();
 
         return view('members.index', compact('members'));
     }
